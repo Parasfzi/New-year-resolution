@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Year Resolution Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f8ff;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+
+    .remove {
+      color: red;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 New Year Resolution Tracker</h1>
+    <form id="resolutionForm">
+      <input type="text" id="resolutionInput" placeholder="Enter your resolution" required>
+      <button type="submit">Add</button>
+    </form>
+    <ul id="resolutionList"></ul>
+  </div>
+  <script>
+    // Select elements
+    const form = document.getElementById('resolutionForm');
+    const input = document.getElementById('resolutionInput');
+    const list = document.getElementById('resolutionList');
+
+    // Load resolutions from LocalStorage
+    let resolutions = JSON.parse(localStorage.getItem('resolutions')) || [];
+    renderResolutions();
+
+    // Add new resolution
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const resolution = input.value;
+      resolutions.push({ text: resolution, completed: false });
+      localStorage.setItem('resolutions', JSON.stringify(resolutions));
+      renderResolutions();
+      input.value = '';
+    });
+
+    // Render resolutions
+    function renderResolutions() {
+      list.innerHTML = '';
+      resolutions.forEach((res, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span class="${res.completed ? 'completed' : ''}" onclick="toggleCompletion(${index})">
+            ${res.text}
+          </span>
+          <span class="remove" onclick="removeResolution(${index})">❌</span>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    // Toggle completion
+    function toggleCompletion(index) {
+      resolutions[index].completed = !resolutions[index].completed;
+      localStorage.setItem('resolutions', JSON.stringify(resolutions));
+      renderResolutions();
+    }
+
+    // Remove resolution
+    function removeResolution(index) {
+      resolutions.splice(index, 1);
+      localStorage.setItem('resolutions', JSON.stringify(resolutions));
+      renderResolutions();
+    }
+  </script>
+</body>
+</html>
